@@ -1,4 +1,4 @@
-```markdown
+
 # 🕵️ CyberSploit: 1 — Detailed Vulnerability Report
 
 ---
@@ -88,7 +88,6 @@ Nothing prevents a compromised user from escalating or accessing system files.
 - Protect files with proper **permissions and access control**.  
 - Always **update OS and kernel** to avoid public exploits.  
 - Implement **defense-in-depth**: AppArmor, SELinux, or containers.
-```
 
 ---
 
