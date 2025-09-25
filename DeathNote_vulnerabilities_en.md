@@ -1,27 +1,77 @@
 
 ---
 
-## **Мапінг вразливостей Death Note → MITRE ATT\&CK**
+## **List of Vulnerabilities in the Death Note Machine**
 
-| № | Вразливість                                                 | Тактика MITRE ATT\&CK                  | Техніка (ID) та опис                                                                                       |
-| - | ----------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1 | **Витік внутрішнього доменного імені (DNS)**                | Reconnaissance                         | **T1590.001 – Gather Victim Network Information: Domain Properties**<br>Збір даних про домени та хости.    |
-| 2 | **Індексація директорій (Directory Listing)**               | Discovery                              | **T1083 – File and Directory Discovery**<br>Отримання інформації про файли й директорії в системі.         |
-| 3 | **Відкриті конфігураційні файли (robots.txt)**              | Reconnaissance                         | **T1592.002 – Gather Victim Identity Information: Website Content**<br>Збір інформації з веб-контенту.     |
-| 4 | **Зберігання паролів у відкритому вигляді**                 | Credential Access                      | **T1552.001 – Unsecured Credentials: Local Files**<br>Паролі у відкритому вигляді або слабозахищені файли. |
-| 5 | **Слабкі або повторно використані паролі**                  | Credential Access                      | **T1110.001 – Brute Force: Password Guessing**<br>Атаки підбором через слабкі паролі.                      |
-| 6 | **Відсутність обмеження на кількість спроб автентифікації** | Credential Access                      | **T1110.003 – Brute Force: Password Spraying**<br>Автоматизований підбір без блокування.                   |
-| 7 | **Відсутність сегрегації привілеїв (sudo без обмежень)**    | Privilege Escalation / Defense Evasion | **T1078 – Valid Accounts**<br>Отримання root-доступу через зламані облікові записи.                        |
-| 8 | **Інформаційні витоки у вихідному коді та файлах**          | Reconnaissance / Discovery             | **T1592 – Gather Victim Identity Information**<br>Витік службових даних через код, конфіги, коментарі.     |
+### 1. **Incorrect DNS Configuration / Internal Domain Name Disclosure**
+
+* **Where Found:** In the source code of the page on port 80, there is a hint `deathnote.vuln`.
+* **Issue:** The system relies on local DNS, but the domain is explicitly mentioned in the site’s code and can be easily resolved via `/etc/hosts`.
+* **Risk:** An attacker can gain access to internal resources or hidden pages by spoofing DNS records.
+* **Solution:** Do not expose sensitive domain names in public code or use virtual hosts with proper authentication.
 
 ---
 
-## **Тактики MITRE, які покриваються цими вразливостями**
+### 2. **Directory Listing Enabled**
 
-* **Reconnaissance** – збір даних: домени, веб-контент, конфіги.
-* **Discovery** – виявлення файлів, директорій, облікових записів.
-* **Credential Access** – отримання паролів, brute-force атаки.
-* **Privilege Escalation** – підвищення прав доступу (sudo/root).
-* **Defense Evasion** – уникнення обмежень і захистів системи.
+* **Where Found:** Access to a directory with `user.txt` and `notes.txt` files via the browser.
+* **Issue:** Directory listing is enabled on the web server, allowing anyone to view the contents of folders.
+* **Risk:** An attacker can find sensitive files (lists of logins, passwords).
+* **Solution:** Disable directory listing on the web server (e.g., for Apache — `Options -Indexes`).
 
 ---
+
+### 3. **Exposed Configuration Files (robots.txt)**
+
+* **Where Found:** The `robots.txt` file contains a path to `important.jpg`.
+* **Issue:** `robots.txt` is intended for search engine crawlers but is often misused to hide files. Attackers always check it for hidden paths.
+* **Risk:** Possibility of accessing sensitive information through hidden files.
+* **Solution:** Do not store sensitive paths in `robots.txt`; use authentication instead.
+
+---
+
+### 4. **Passwords Stored in Plaintext**
+
+* **Where Found:** Passwords are stored in plaintext in `notes.txt` and other files.
+* **Issue:** There is no encryption or hashing of passwords.
+* **Risk:** Passwords can be used for brute-force attacks or unauthorized authentication.
+* **Solution:** Use encryption (bcrypt, Argon2) and prohibit storing passwords in plaintext.
+
+---
+
+### 5. **Weak or Reused Passwords**
+
+* **Where Found:** The password `kiraisevil` works for both the regular user `kira` and `root`.
+* **Issue:** The same password is reused across multiple accounts.
+* **Risk:** Compromise of one account leads to full system access.
+* **Solution:** Require different passwords for root and regular users, enforce strong password policies.
+
+---
+
+### 6. **No Authentication Attempt Limitation (Brute Force)**
+
+* **Where Found:** `hydra` successfully brute-forces the SSH password with no IP blocking.
+* **Issue:** The SSH service has no limit on failed login attempts.
+* **Risk:** Enables automated brute-force attacks.
+* **Solution:** Use `fail2ban`, two-factor authentication, or rate-limiting for logins.
+
+---
+
+### 7. **Lack of Privilege Segregation**
+
+* **Where Found:** The `kira` user password works for `sudo -i`.
+* **Issue:** The user immediately gets root access without any additional restrictions.
+* **Risk:** Anyone with the `kira` password gets full system control.
+* **Solution:** Use `sudoers` with precise rules, and disable direct root access.
+
+---
+
+### 8. **Information Disclosure in Source Code and Files**
+
+* **Where Found:** HTML source code, `case.wav`, and messages in `user.txt` reveal hints about passwords and paths.
+* **Issue:** Public files contain internal or sensitive information.
+* **Risk:** Attackers gain additional attack vectors.
+* **Solution:** Remove internal information before deployment.
+
+---
+
