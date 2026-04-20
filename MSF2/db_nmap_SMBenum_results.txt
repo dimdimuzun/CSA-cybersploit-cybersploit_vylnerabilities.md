@@ -1,0 +1,55 @@
+msf6 > db_nmap -p445 --script smb-enum* 192.168.88.24
+[*] Nmap: Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-04-18 16:05 EDT
+[*] Nmap: Nmap scan report for 192.168.88.24
+[*] Nmap: Host is up (0.00053s latency).
+[*] Nmap: PORT    STATE SERVICE
+[*] Nmap: 445/tcp open  microsoft-ds
+[*] Nmap: MAC Address: 08:00:27:42:51:79 (Oracle VirtualBox virtual NIC)
+[*] Nmap: Host script results:
+[*] Nmap: | smb-enum-domains:
+[*] Nmap: |   METASPLOITABLE3-UB1404
+[*] Nmap: |     Groups: n/a
+[*] Nmap: |     Users: chewbacca
+[*] Nmap: |     Creation time: unknown
+[*] Nmap: |     Passwords: min length: 5; min age: n/a days; max age: n/a days; history: n/a passwords
+[*] Nmap: |     Account lockout disabled
+[*] Nmap: |   Builtin
+[*] Nmap: |     Groups: n/a
+[*] Nmap: |     Users: n/a
+[*] Nmap: |     Creation time: unknown
+[*] Nmap: |     Passwords: min length: 5; min age: n/a days; max age: n/a days; history: n/a passwords
+[*] Nmap: |_    Account lockout disabled
+[*] Nmap: | smb-enum-shares:
+[*] Nmap: |   account_used: guest
+[*] Nmap: |   \\192.168.88.24\IPC$:
+[*] Nmap: |     Type: STYPE_IPC_HIDDEN
+[*] Nmap: |     Comment: IPC Service (metasploitable3-ub1404 server (Samba, Ubuntu))
+[*] Nmap: |     Users: 2
+[*] Nmap: |     Max Users: <unlimited>
+[*] Nmap: |     Path: C:\tmp
+[*] Nmap: |     Anonymous access: READ/WRITE
+[*] Nmap: |     Current user access: READ/WRITE
+[*] Nmap: |   \\192.168.88.24\print$:
+[*] Nmap: |     Type: STYPE_DISKTREE
+[*] Nmap: |     Comment: Printer Drivers
+[*] Nmap: |     Users: 0
+[*] Nmap: |     Max Users: <unlimited>
+[*] Nmap: |     Path: C:\var\lib\samba\printers
+[*] Nmap: |     Anonymous access: <none>
+[*] Nmap: |     Current user access: <none>
+[*] Nmap: |   \\192.168.88.24\public:
+[*] Nmap: |     Type: STYPE_DISKTREE
+[*] Nmap: |     Comment: WWW
+[*] Nmap: |     Users: 0
+[*] Nmap: |     Max Users: <unlimited>
+[*] Nmap: |     Path: C:\var\www\html\
+[*] Nmap: |     Anonymous access: <none>
+[*] Nmap: |_    Current user access: <none>
+[*] Nmap: | smb-enum-users:
+[*] Nmap: |   METASPLOITABLE3-UB1404\chewbacca (RID: 1000)
+[*] Nmap: |     Full name:
+[*] Nmap: |     Description:
+[*] Nmap: |_    Flags:       Normal user account
+[*] Nmap: | smb-enum-sessions:
+[*] Nmap: |_  <nobody>
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 305.58 seconds
