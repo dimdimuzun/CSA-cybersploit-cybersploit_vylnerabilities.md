@@ -575,7 +575,7 @@ ls /home
 ```
 
 Виявлено користувача `saket`, але доступ обмежений.
-![saket_denied]./HackMePlease/(image-24.png)
+![saket_denied](./HackMePlease/image-24.png)
 Оскільки облікові дані вже відомі (`saket:Saket@#$1337`), виконуємо:
 
 ```bash
